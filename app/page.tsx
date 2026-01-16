@@ -1,14 +1,15 @@
+'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Bond, MarketRate, NewsItem } from './types';
-import { INITIAL_WATCHLIST, INITIAL_RATES, INITIAL_NEWS } from './constants';
-import MarketTicker from './components/MarketTicker';
-import WatchlistTable from './components/WatchlistTable';
-import AnalysisPanel from './components/AnalysisPanel';
-import NewsFeed from './components/NewsFeed';
-import { gemini } from './services/geminiService';
+import { Bond, MarketRate, NewsItem } from '@/types';
+import { INITIAL_WATCHLIST, INITIAL_RATES, INITIAL_NEWS } from '@/constants';
+import MarketTicker from '@/components/MarketTicker';
+import WatchlistTable from '@/components/WatchlistTable';
+import AnalysisPanel from '@/components/AnalysisPanel';
+import NewsFeed from '@/components/NewsFeed';
+import { apiService } from '@/lib/apiService';
 
-const App: React.FC = () => {
+export default function Home() {
   const [watchlist, setWatchlist] = useState<Bond[]>(INITIAL_WATCHLIST);
   const [rates, setRates] = useState<MarketRate[]>(INITIAL_RATES);
   const [news, setNews] = useState<NewsItem[]>(INITIAL_NEWS);
@@ -22,14 +23,14 @@ const App: React.FC = () => {
     if (selectedBond) {
       const fetchInsight = async () => {
         setLoadingInsight(true);
-        const insight = await gemini.getTraderInsight(selectedBond);
+        const insight = await apiService.getTraderInsight(selectedBond);
         setBondInsight(insight);
         setLoadingInsight(false);
       };
       fetchInsight();
 
       const fetchIssuerNews = async () => {
-        const issuerNews = await gemini.getIssuerNews(selectedBond.issuer, selectedBond.guarantor);
+        const issuerNews = await apiService.getIssuerNews(selectedBond.issuer, selectedBond.guarantor);
         if (issuerNews.length > 0) {
           setNews([...issuerNews, ...INITIAL_NEWS]);
         }
@@ -54,7 +55,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchMacro = async () => {
-      const strategy = await gemini.getMacroSummary(INITIAL_NEWS);
+      const strategy = await apiService.getMacroSummary(INITIAL_NEWS);
       setMacroStrategy(strategy);
     };
     fetchMacro();
@@ -209,6 +210,4 @@ const App: React.FC = () => {
       </footer>
     </div>
   );
-};
-
-export default App;
+}
