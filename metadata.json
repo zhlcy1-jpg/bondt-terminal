@@ -1,0 +1,5 @@
+{
+  "name": "BondTerminal Pro",
+  "description": "A high-performance fixed-income dashboard for bond traders to monitor prices, yields, and duration while leveraging Gemini AI for real-time issuer news and macro analysis.",
+  "requestFramePermissions": []
+}
